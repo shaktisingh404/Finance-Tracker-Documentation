@@ -86,11 +86,6 @@ GET /categories/
 ```
 Retrieve all categories for the authenticated user.
 
-**Query Parameters:**
-- `type`: "debit" | "credit"
-- `is_predefined`: boolean
-- `page`: integer
-- `page_size`: integer
 
 **Response:** `200 OK`
 ```json
@@ -197,11 +192,6 @@ GET /transactions/
 ```
 Retrieve user's transactions with optional filtering.
 
-**Query Parameters:**
-- `category`: UUID
-- `type`: "credit" | "debit"
-- `date`: YYYY-MM-DD
-- `amount`: decimal
 
 **Response:** `200 OK`
 ```json
@@ -334,8 +324,7 @@ GET /budgets/
 Retrieve user's budgets with spending progress.
 
 **Query Parameters:**
-- `year`: integer
-- `month`: integer
+- `month_year`: integer
 - `category`: UUID
 
 **Response:** `200 OK`
@@ -452,9 +441,6 @@ GET /savings/plans/
 ```
 Retrieve all savings plans with progress.
 
-**Query Parameters:**
-- `priority`: "HIGH" | "MEDIUM" | "LOW"
-- `frequency`: "DAILY" | "WEEKLY" | "MONTHLY"
 
 **Response:** `200 OK`
 ```json
@@ -586,9 +572,6 @@ GET /savings/transactions/
 ```
 Retrieve all savings contributions.
 
-**Query Parameters:**
-- `savings_plan`: UUID
-- `amount`: 
 
 **Response:** `200 OK`
 ```json
