@@ -1,4 +1,4 @@
-# Finance Management API Documentation ( M2 )
+# Finance Management API Documentation ( M2 ) 
 
 ## Overview
 This API enables users to manage their personal finances, including transactions, budgets, categories, and savings plans. Users can track their income and expenses, set budgets, and create savings goals.
@@ -60,42 +60,9 @@ Authenticate user and receive token.
 ```json
 {
     "data": {
-        "user": {
-            "id": "c38605bf-4595-4a6f-897f-986e11a3d4e3",
-            "username": "admin",
-            "email": "admin@email.com",
-            "name": "admin",
-            "created_at": "2025-02-03T13:10:03.508906+05:30",
-            "updated_at": "2025-02-03T13:10:03.509248+05:30",
-            "is_active": true,
-            "is_staff": true
-        },
-        "tokens": {
-            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-            "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-        }
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4OTU2MDg3LCJpYXQiOjE3Mzg5NTI0ODcsImp0aSI6IjlmZmVjZTg5ZmQwMjRmMDVhMjViMzUyZTZlOTdhZjQxIiwidXNlcl9pZCI6IjI2YTg0ZTVjLTZjNzgtNDk1NC04YmFmLWFlNWZjYzhiNDNmNiJ9.v0LH38ulQu_ftJ38tbhtu6UHS9oA56_C0XA4hYTBZvQ",
+        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczOTM4NDQ4NywiaWF0IjoxNzM4OTUyNDg3LCJqdGkiOiJmZmY4ODRiZDZiZmM0ZjEzYjhjMmIyMjA2OTFhMTYwYSIsInVzZXJfaWQiOiIyNmE4NGU1Yy02Yzc4LTQ5NTQtOGJhZi1hZTVmY2M4YjQzZjYifQ.Q-6BAjzME_5RTQAXXCsOXVvfJcCUYHSJ8B4AGz_V2GQ"
     }
-}
-```
-
-### Refresh Token
-```
-POST /auth/token/refresh/
-```
-Get new access token using refresh token.
-
-**Request:**
-```json
-{
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
 ```
 
 ### Logout
@@ -107,7 +74,7 @@ Invalidate current token.
 **Response:** `200 OK`
 ```json
 {
-  "message": "Successfully logged out"
+    "message": "Logged out successfully"
 }
 ```
 
@@ -131,7 +98,7 @@ Retrieve all categories for the authenticated user.
   "count": 5,
   "next": "/api/v1/categories/?page=2",
   "previous": null,
-  "results": [
+  "data": [
     {
       "id": "550e8400-e29b-41d4-a716-446655440000",
       "name": "Groceries",
@@ -233,35 +200,29 @@ Retrieve user's transactions with optional filtering.
 **Query Parameters:**
 - `category`: UUID
 - `type`: "credit" | "debit"
-- `start_date`: YYYY-MM-DD
-- `end_date`: YYYY-MM-DD
-- `min_amount`: decimal
-- `max_amount`: decimal
-- `page`: integer
-- `page_size`: integer
+- `date`: YYYY-MM-DD
+- `amount`: decimal
 
 **Response:** `200 OK`
 ```json
 {
-  "count": 50,
+  "count": 10,
   "next": "/api/v1/transactions/?page=2",
   "previous": null,
-  "data": [
-    {
-      "id": "f822bc0c-8602-4ec3-b760-20e05baae610",
-      "created_at": "2025-02-06T11:51:23.709087+05:30",
-      "updated_at": "2025-02-06T11:51:23.709102+05:30",
-      "amount": "910.00",
-      "date": "2025-02-03T05:30:00+05:30",
-      "description": "Sample transaction",
-      "type": "debit",
-      "category": {
-        "id": "12080679-24a6-47ad-be2c-a52ac8076619",
-        "name": "Groceries",
-        "type": "debit"
-      }
-    }
-  ]
+    "data": [
+        {
+            "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
+            "created_at": "2025-02-07T23:58:43.310845+05:30",
+            "updated_at": "2025-02-07T23:58:43.310859+05:30",
+            "is_deleted": false,
+            "amount": "10.00",
+            "date": "2025-02-04T00:00:00+05:30",
+            "description": "Sample transaction",
+            "type": "debit",
+            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+            "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
+        }
+    ]
 }
 ```
 
@@ -274,18 +235,16 @@ Retrieve details of a specific transaction.
 **Response:** `200 OK`
 ```json
 {
-  "id": "f822bc0c-8602-4ec3-b760-20e05baae610",
-  "created_at": "2025-02-06T11:51:23.709087+05:30",
-  "updated_at": "2025-02-06T11:51:23.709102+05:30",
-  "amount": "910.00",
-  "date": "2025-02-03T05:30:00+05:30",
-  "description": "Sample transaction",
-  "type": "debit",
-  "category": {
-    "id": "12080679-24a6-47ad-be2c-a52ac8076619",
-    "name": "Groceries",
-    "type": "debit"
-  }
+        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
+        "created_at": "2025-02-07T23:58:43.310845+05:30",
+        "updated_at": "2025-02-07T23:58:43.310859+05:30",
+        "is_deleted": false,
+        "amount": "10.00",
+        "date": "2025-02-04T00:00:00+05:30",
+        "description": "Sample transaction",
+        "type": "debit",
+        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
 }
 ```
 
@@ -298,29 +257,30 @@ Record a new transaction.
 **Request:**
 ```json
 {
-  "category": "550e8400-e29b-41d4-a716-446655440000",
-  "amount": 50.25,
-  "date": "2025-02-07T10:30:00Z",
-  "description": "Weekly groceries",
-  "type": "debit"
+    "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "date": "2025-02-04",
+    "amount": 10.00,
+    "type": "debit",
+    "category":"38c73786-d676-4d97-8fb9-78f187a50ae3",
+    "description": "Sample transaction"
 }
 ```
 
 **Response:** `201 Created`
 ```json
 {
-  "id": "f822bc0c-8602-4ec3-b760-20e05baae610",
-  "created_at": "2025-02-07T11:51:23.709087+05:30",
-  "updated_at": "2025-02-07T11:51:23.709102+05:30",
-  "amount": "50.25",
-  "date": "2025-02-07T10:30:00Z",
-  "description": "Weekly groceries",
-  "type": "debit",
-  "category": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Groceries",
-    "type": "debit"
-  }
+    "data": {
+        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
+        "created_at": "2025-02-07T23:58:43.310845+05:30",
+        "updated_at": "2025-02-07T23:58:43.310859+05:30",
+        "is_deleted": false,
+        "amount": "10.00",
+        "date": "2025-02-04T00:00:00+05:30",
+        "description": "Sample transaction",
+        "type": "debit",
+        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
+    }
 }
 ```
 
@@ -333,29 +293,25 @@ Update an existing transaction.
 **Request:**
 ```json
 {
-  "category": "550e8400-e29b-41d4-a716-446655440000",
-  "amount": 55.25,
-  "date": "2025-02-07T10:30:00Z",
-  "description": "Updated grocery shopping",
-  "type": "debit"
+    "amount":"999"
 }
 ```
 
 **Response:** `200 OK`
 ```json
 {
-  "id": "f822bc0c-8602-4ec3-b760-20e05baae610",
-  "created_at": "2025-02-07T11:51:23.709087+05:30",
-  "updated_at": "2025-02-07T12:51:23.709102+05:30",
-  "amount": "55.25",
-  "date": "2025-02-07T10:30:00Z",
-  "description": "Updated grocery shopping",
-  "type": "debit",
-  "category": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Groceries",
-    "type": "debit"
-  }
+    "data": {
+        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
+        "created_at": "2025-02-07T23:58:43.310845+05:30",
+        "updated_at": "2025-02-08T00:03:27.226104+05:30",
+        "is_deleted": false,
+        "amount": "999.00",
+        "date": "2025-02-04T00:00:00+05:30",
+        "description": "Sample transaction",
+        "type": "debit",
+        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
+    }
 }
 ```
 
@@ -381,8 +337,6 @@ Retrieve user's budgets with spending progress.
 - `year`: integer
 - `month`: integer
 - `category`: UUID
-- `page`: integer
-- `page_size`: integer
 
 **Response:** `200 OK`
 ```json
@@ -390,22 +344,18 @@ Retrieve user's budgets with spending progress.
   "count": 5,
   "next": "/api/v1/budgets/?page=2",
   "previous": null,
-  "results": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "category": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "name": "Groceries"
-      },
-      "year": 2025,
-      "month": 2,
-      "amount": 500.00,
-      "spent": 150.75,
-      "remaining": 349.25,
-      "created_at": "2025-02-03T13:10:03.508906+05:30",
-      "updated_at": "2025-02-03T13:10:03.509248+05:30"
-    }
-  ]
+    "data": [
+        {
+            "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
+            "amount": "1000.00",
+            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+            "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+            "spent_amount": "0.00",
+            "year": 2025,
+            "month": 3,
+            "is_deleted": false
+        }
+    ]
 }
 ```
 
@@ -418,18 +368,14 @@ Retrieve details of a specific budget.
 **Response:** `200 OK`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "category": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Groceries"
-  },
-  "year": 2025,
-  "month": 2,
-  "amount": 500.00,
-  "spent": 150.75,
-  "remaining": 349.25,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-03T13:10:03.509248+05:30"
+    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
+    "amount": "1000.00",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+    "spent_amount": "0.00",
+    "year": 2025,
+    "month": 3,
+    "is_deleted": false
 }
 ```
 
@@ -441,29 +387,25 @@ Set a new budget for a category.
 
 **Request:**
 ```json
-{
-  "category": "550e8400-e29b-41d4-a716-446655440000",
-  "year": 2025,
-  "month": 2,
-  "amount": 500.00
+{       
+        "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
+        "category":"38c73786-d676-4d97-8fb9-78f187a50ae3",
+        "amount": "1000",
+        "month_year":"3-2025"
 }
 ```
 
 **Response:** `201 Created`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "category": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Groceries"
-  },
-  "year": 2025,
-  "month": 2,
-  "amount": 500.00,
-  "spent": 0.00,
-  "remaining": 500.00,
-  "created_at": "2025-02-07T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30"
+    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
+    "amount": "1000.00",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+    "spent_amount": "0.00",
+    "year": 2025,
+    "month": 3,
+    "is_deleted": false
 }
 ```
 
@@ -476,9 +418,6 @@ Modify an existing budget.
 **Request:**
 ```json
 {
-  "category": "550e8400-e29b-41d4-a716-446655440000",
-  "year": 2025,
-  "month": 2,
   "amount": 600.00
 }
 ```
@@ -486,18 +425,14 @@ Modify an existing budget.
 **Response:** `200 OK`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "category": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Groceries"
-  },
-  "year": 2025,
-  "month": 2,
-  "amount": 600.00,
-  "spent": 150.75,
-  "remaining": 449.25,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30"
+    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
+    "amount": "600.00",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+    "spent_amount": "0.00",
+    "year": 2025,
+    "month": 3,
+    "is_deleted": false
 }
 ```
 
@@ -509,38 +444,6 @@ Remove a budget allocation.
 
 **Response:** `204 No Content`
 
-### Copy Previous Month's Budgets
-```
-POST /budgets/copy-previous/
-```
-Copy all budgets from the previous month to the current month.
-
-**Request:**
-```json
-{
-  "year": 2025,
-  "month": 2
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-  "message": "Successfully copied budgets",
-  "copied_count": 5,
-  "budgets": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "category": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "name": "Groceries"
-      },
-      "amount": 500.00
-    }
-  ]
-}
-```
-
 ## 5. Savings Plans
 
 ### List Savings Plans
@@ -551,9 +454,7 @@ Retrieve all savings plans with progress.
 
 **Query Parameters:**
 - `priority`: "HIGH" | "MEDIUM" | "LOW"
-- `status`: "active" | "completed"
-- `page`: integer
-- `page_size`: integer
+- `frequency`: "DAILY" | "WEEKLY" | "MONTHLY"
 
 **Response:** `200 OK`
 ```json
@@ -561,21 +462,22 @@ Retrieve all savings plans with progress.
   "count": 3,
   "next": null,
   "previous": null,
-  "results": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Emergency Fund",
-      "target_amount": 5000.00,
-      "saved_amount": 2500.00,
-      "deadline": "2025-12-31",
-      "priority": "HIGH",
-      "frequency": "MONTHLY",
-      "progress_percentage": 50.00,
-      "created_at": "2025-02-03T13:10:03.508906+05:30",
-      "updated_at": "2025-02-03T13:10:03.509248+05:30",
-      "status": "active"
-    }
-  ]
+    "data": [
+        {
+            "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+            "name": "MANALI",
+            "target_amount": "10000.00",
+            "deadline": "2026-08-24",
+            "priority": "HIGH",
+            "frequency": "WEEKLY",
+            "is_deleted": false,
+            "progress_percentage": 0.0,
+            "amount_saved": 0,
+            "remaining_amount": 10000.0,
+            "time_remaining": "19 months left"
+        }
+    ]
 }
 ```
 
@@ -588,24 +490,18 @@ Retrieve details of a specific savings plan.
 **Response:** `200 OK`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Emergency Fund",
-  "target_amount": 5000.00,
-  "saved_amount": 2500.00,
-  "deadline": "2025-12-31",
-  "priority": "HIGH",
-  "frequency": "MONTHLY",
-  "progress_percentage": 50.00,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-03T13:10:03.509248+05:30",
-  "status": "active",
-  "transactions": [
-    {
-      "id": "660e8400-e29b-41d4-a716-446655440000",
-      "amount_contributed": 500.00,
-      "date": "2025-02-01T10:30:00Z"
-    }
-  ]
+    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "name": "MANALI",
+    "target_amount": "10000.00",
+    "deadline": "2026-08-24",
+    "priority": "HIGH",
+    "frequency": "WEEKLY",
+    "is_deleted": false,
+    "progress_percentage": 0.0,
+    "amount_saved": 0,
+    "remaining_amount": 10000.0,
+    "time_remaining": "19 months left"
 }
 ```
 
@@ -618,28 +514,30 @@ Create a new savings goal.
 **Request:**
 ```json
 {
-  "name": "Emergency Fund",
-  "target_amount": 5000.00,
-  "deadline": "2025-12-31",
-  "priority": "HIGH",
-  "frequency": "MONTHLY"
+    "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "name":"MANALI",
+    "target_amount":"10000",
+    "deadline": "2026-08-24",
+    "priority": "HIGH",
+    "frequency": "WEEKLY"
 }
 ```
 
 **Response:** `201 Created`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Emergency Fund",
-  "target_amount": 5000.00,
-  "saved_amount": 0.00,
-  "deadline": "2025-12-31",
-  "priority": "HIGH",
-  "frequency": "MONTHLY",
-  "progress_percentage": 0.00,
-  "created_at": "2025-02-07T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30",
-  "status": "active"
+    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "name": "MANALI",
+    "target_amount": "10000.00",
+    "deadline": "2026-08-24",
+    "priority": "HIGH",
+    "frequency": "WEEKLY",
+    "is_deleted": false,
+    "progress_percentage": 0.0,
+    "amount_saved": 0,
+    "remaining_amount": 10000.0,
+    "time_remaining": "19 months left"
 }
 ```
 
@@ -652,28 +550,25 @@ Modify an existing savings plan.
 **Request:**
 ```json
 {
-  "name": "Updated Emergency Fund",
-  "target_amount": 6000.00,
-  "deadline": "2025-12-31",
-  "priority": "HIGH",
-  "frequency": "MONTHLY"
+    "target_amount":"50000"
 }
 ```
 
 **Response:** `200 OK`
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Updated Emergency Fund",
-  "target_amount": 6000.00,
-  "saved_amount": 2500.00,
-  "deadline": "2025-12-31",
-  "priority": "HIGH",
-  "frequency": "MONTHLY",
-  "progress_percentage": 41.67,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30",
-  "status": "active"
+    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "name": "MANALI",
+    "target_amount": "50000.00",
+    "deadline": "2026-08-24",
+    "priority": "HIGH",
+    "frequency": "WEEKLY",
+    "is_deleted": false,
+    "progress_percentage": 0.0,
+    "amount_saved": 0,
+    "remaining_amount": 50000.0,
+    "time_remaining": "19 months left"
 }
 ```
 
@@ -693,30 +588,21 @@ Retrieve all savings contributions.
 
 **Query Parameters:**
 - `savings_plan`: UUID
-- `start_date`: YYYY-MM-DD
-- `end_date`: YYYY-MM-DD
-- `page`: integer
-- `page_size`: integer
+- `amount`: 
 
 **Response:** `200 OK`
 ```json
 {
-  "count": 10,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "id": "660e8400-e29b-41d4-a716-446655440000",
-      "savings_plan": {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "name": "Emergency Fund"
-      },
-      "amount_contributed": 500.00,
-      "date": "2025-02-01T10:30:00Z",
-      "created_at": "2025-02-01T13:10:03.508906+05:30",
-      "updated_at": "2025-02-01T13:10:03.509248+05:30"
-    }
-  ]
+    "data": [
+        {
+            "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
+            "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+            "amount_contributed": "500.00",
+            "transaction_date": "2025-02-08T00:19:44.706015+05:30",
+            "is_deleted": false
+        }
+    ]
 }
 ```
 
@@ -729,24 +615,21 @@ Record a contribution to a savings plan.
 **Request:**
 ```json
 {
-  "savings_plan": "550e8400-e29b-41d4-a716-446655440000",
-  "amount_contributed": 500.00,
-  "date": "2025-02-07T10:30:00Z"
+  "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+  "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+  "amount_contributed": "500"
 }
 ```
 
 **Response:** `201 Created`
 ```json
 {
-  "id": "660e8400-e29b-41d4-a716-446655440000",
-  "savings_plan": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Emergency Fund"
-  },
-  "amount_contributed": 500.00,
-  "date": "2025-02-07T10:30:00Z",
-  "created_at": "2025-02-07T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30"
+    "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
+    "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "amount_contributed": "500.00",
+    "transaction_date": "2025-02-08T00:19:44.706015+05:30",
+    "is_deleted": false
 }
 ```
 
@@ -759,23 +642,19 @@ Update a savings contribution record.
 **Request:**
 ```json
 {
-  "amount_contributed": 600.00,
-  "date": "2025-02-07T10:30:00Z"
+  "amount_contributed": 2000.00,
 }
 ```
 
 **Response:** `200 OK`
 ```json
 {
-  "id": "660e8400-e29b-41d4-a716-446655440000",
-  "savings_plan": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Emergency Fund"
-  },
-  "amount_contributed": 600.00,
-  "date": "2025-02-07T10:30:00Z",
-  "created_at": "2025-02-07T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T14:10:03.509248+05:30"
+    "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
+    "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
+    "amount_contributed": "2000.00",
+    "transaction_date": "2025-02-08T00:19:44.706015+05:30",
+    "is_deleted": false
 }
 ```
 
@@ -787,80 +666,6 @@ Remove a savings contribution record.
 
 **Response:** `204 No Content`
 
-## Error Responses
+## Full Source Code  
 
-All endpoints may return these standard error responses:
-
-### 400 Bad Request
-```json
-{
-  "error": {
-    "code": "validation_error",
-    "message": "Invalid input data",
-    "details": {
-      "field_name": ["error message"]
-    }
-  }
-}
-```
-
-### 401 Unauthorized
-```json
-{
-  "error": {
-    "code": "authentication_failed",
-    "message": "Invalid or expired token"
-  }
-}
-```
-
-### 403 Forbidden
-```json
-{
-  "error": {
-    "code": "permission_denied",
-    "message": "You do not have permission to perform this action"
-  }
-}
-```
-
-### 404 Not Found
-```json
-{
-  "error": {
-    "code": "not_found",
-    "message": "Requested resource not found"
-  }
-}
-```
-
-### 409 Conflict
-```json
-{
-  "error": {
-    "code": "resource_conflict",
-    "message": "Resource cannot be modified or deleted due to existing dependencies"
-  }
-}
-```
-
-### 429 Too Many Requests
-```json
-{
-  "error": {
-    "code": "rate_limit_exceeded",
-    "message": "Too many requests. Please try again later.",
-    "retry_after": 60
-  }
-}
-```
-
-### 500 Internal Server Error
-```json
-{
-  "error": {
-    "code": "internal_error",
-    "message": "An unexpected error occurred"
-  }
-}
-```
+Please find the full source code [here](https://github.com/shakti505/Income-Expense-Tracker).
