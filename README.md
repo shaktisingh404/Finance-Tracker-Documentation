@@ -652,3 +652,242 @@ Remove a savings contribution record.
 ## Full Source Code  
 
 Please find the full source code [here](https://github.com/shakti505/Income-Expense-Tracker).
+
+
+
+
+
+## Recurring Transactions
+
+### List Recurring Transactions
+```
+GET /transactions/recurring/
+```
+Retrieve all recurring transactions.
+
+**Response:** `200 OK`
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "data": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "Monthly Rent",
+      "amount": "1500.00",
+      "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+      "frequency": "MONTHLY",
+      "start_date": "2025-02-01",
+      "end_date": "2025-12-31",
+      "next_occurrence": "2025-03-01",
+      "description": "Apartment rent payment",
+      "is_active": true,
+      "created_at": "2025-02-08T00:19:44.706015+05:30",
+      "updated_at": "2025-02-08T00:19:44.706015+05:30"
+    }
+  ]
+}
+```
+
+### Create Recurring Transaction
+```
+POST /transactions/recurring/
+```
+
+**Request:**
+```json
+{
+  "name": "Monthly Rent",
+  "amount": "1500.00",
+  "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+  "frequency": "MONTHLY",
+  "start_date": "2025-02-01",
+  "end_date": "2025-12-31",
+  "description": "Apartment rent payment"
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "data": {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "Monthly Rent",
+    "amount": "1500.00",
+    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
+    "frequency": "MONTHLY",
+    "start_date": "2025-02-01",
+    "end_date": "2025-12-31",
+    "next_occurrence": "2025-03-01",
+    "description": "Apartment rent payment",
+    "is_active": true,
+    "created_at": "2025-02-08T00:19:44.706015+05:30",
+    "updated_at": "2025-02-08T00:19:44.706015+05:30"
+  }
+}
+```
+
+## Savings Plan Deadline Extension
+
+### Extend Savings Plan Deadline
+```
+PATCH /savings/plans/{id}/extend-deadline/
+```
+
+**Request:**
+```json
+{
+  "new_deadline": "2026-12-31",
+  "reason": "Need more time to reach savings goal"
+}
+```
+
+**Response:** `200 OK`
+```json
+{
+  "data": {
+    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
+    "name": "MANALI",
+    "target_amount": "50000.00",
+    "original_deadline": "2026-08-24",
+    "new_deadline": "2026-12-31",
+    "extension_history": [
+      {
+        "date_extended": "2025-02-08T00:19:44.706015+05:30",
+        "old_deadline": "2026-08-24",
+        "new_deadline": "2026-12-31",
+        "reason": "Need more time to reach savings goal"
+      }
+    ],
+    "progress_percentage": 4.0,
+    "amount_saved": 2000.0,
+    "remaining_amount": 48000.0,
+    "time_remaining": "23 months left"
+  }
+}
+```
+
+## Transaction Summary and Trends
+
+### Get Transaction Summary
+```
+GET /transactions/summary/
+```
+
+**Query Parameters:**
+- `start_date`: date (YYYY-MM-DD)
+- `end_date`: date (YYYY-MM-DD)
+- `category`: UUID (optional)
+
+**Response:** `200 OK`
+```json
+{
+  "data": {
+    "period": {
+      "start_date": "2025-01-01",
+      "end_date": "2025-02-08"
+    },
+    "total_income": "5000.00",
+    "total_expenses": "3500.00",
+    "net_savings": "1500.00",
+    "category_breakdown": [
+      {
+        "category": "Groceries",
+        "total_amount": "800.00",
+        "percentage": 22.86
+      }
+    ],
+    "monthly_averages": {
+      "income": "2500.00",
+      "expenses": "1750.00",
+      "savings": "750.00"
+    }
+  }
+}
+```
+
+### Get Transaction Trends
+```
+GET /transactions/trends/
+```
+
+**Query Parameters:**
+- `period`: string (WEEKLY, MONTHLY, YEARLY)
+- `start_date`: date (YYYY-MM-DD)
+- `end_date`: date (YYYY-MM-DD)
+
+**Response:** `200 OK`
+```json
+{
+  "data": {
+    "trend_period": "MONTHLY",
+    "trends": [
+      {
+        "period": "2025-01",
+        "income": "2500.00",
+        "expenses": "1800.00",
+        "savings": "700.00",
+        "top_expense_categories": [
+          {
+            "category": "Groceries",
+            "amount": "500.00"
+          }
+        ],
+        "comparison_previous_period": {
+          "income_change": "+5.2%",
+          "expense_change": "-2.1%",
+          "savings_change": "+15.3%"
+        }
+      }
+    ],
+    "overall_trend": {
+      "income_trend": "INCREASING",
+      "expense_trend": "STABLE",
+      "savings_trend": "INCREASING"
+    }
+  }
+}
+```
+
+## Export Functionality
+
+### Export Transactions to PDF
+```
+GET /transactions/export/pdf/
+```
+
+**Query Parameters:**
+- `start_date`: date (YYYY-MM-DD)
+- `end_date`: date (YYYY-MM-DD)
+- `categories`: array of UUIDs (optional)
+
+**Response:** `200 OK`
+```json
+{
+  "data": {
+    "file_url": "https://api.example.com/downloads/transactions_2025_01_02.pdf",
+    "expires_at": "2025-02-09T00:19:44.706015+05:30"
+  }
+}
+```
+
+### Export Transactions to CSV
+```
+GET /transactions/export/csv/
+```
+
+**Query Parameters:**
+- `start_date`: date (YYYY-MM-DD)
+- `end_date`: date (YYYY-MM-DD)
+- `categories`: array of UUIDs (optional)
+
+**Response:** `200 OK`
+```json
+{
+  "data": {
+    "file_url": "https://api.example.com/downloads/transactions_2025_01_02.csv",
+    "expires_at": "2025-02-09T00:19:44.706015+05:30"
+  }
+}
+```
