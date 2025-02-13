@@ -649,42 +649,34 @@ Remove a savings contribution record.
 
 **Response:** `204 No Content`
 
-## Full Source Code  
-
-Please find the full source code [here](https://github.com/shakti505/Income-Expense-Tracker).
-
-
-
-
-
-## Recurring Transactions
+## 6. Recurring Transactions
 
 ### List Recurring Transactions
 ```
-GET /transactions/recurring/
+GET /recurring-transactions/
 ```
 Retrieve all recurring transactions.
 
 **Response:** `200 OK`
 ```json
 {
-  "count": 2,
-  "next": null,
-  "previous": null,
-  "data": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Monthly Rent",
-      "amount": "1500.00",
-      "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-      "frequency": "MONTHLY",
-      "start_date": "2025-02-01",
-      "end_date": "2025-12-31",
-      "next_occurrence": "2025-03-01",
-      "description": "Apartment rent payment",
-      "is_active": true,
-      "created_at": "2025-02-08T00:19:44.706015+05:30",
-      "updated_at": "2025-02-08T00:19:44.706015+05:30"
+    "data": {
+        "count": 7,
+        "next": "http://127.0.0.1:8000/api/v1/recurring-transactions/?page=2",
+        "previous": null,
+        "results": [
+            {
+                "id": "26d21dc4-060b-4953-8af8-3fdde9f9c198",
+                "user": "547f7668-2c75-407a-9847-eee2e0ef109c",
+                "category": "75e648f8-0cb7-4f43-9851-8995e2038d7e",
+                "type": "debit",
+                "amount": "100.00",
+                "frequency": "monthly",
+                "start_date": "2025-02-12T00:00:00+05:30",
+                "end_date": "2025-02-13T00:00:00+05:30",
+                "next_run": "2025-03-12T00:00:00+05:30",
+                "description": ""
+            },
     }
   ]
 }
@@ -692,43 +684,41 @@ Retrieve all recurring transactions.
 
 ### Create Recurring Transaction
 ```
-POST /transactions/recurring/
+POST /recurring-transactions/
 ```
 
 **Request:**
 ```json
 {
-  "name": "Monthly Rent",
-  "amount": "1500.00",
-  "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-  "frequency": "MONTHLY",
-  "start_date": "2025-02-01",
-  "end_date": "2025-12-31",
-  "description": "Apartment rent payment"
+    "user":"547f7668-2c75-407a-9847-eee2e0ef109c",
+    "amount":"100",
+    "category":"75e648f8-0cb7-4f43-9851-8995e2038d7e",
+    "frequency":"daily",
+    "start_date":"2025-02-13",
+    "end_date":"2025-02-13",
+    "type":"debit"
 }
 ```
 
 **Response:** `201 Created`
 ```json
 {
-  "data": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "name": "Monthly Rent",
-    "amount": "1500.00",
-    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-    "frequency": "MONTHLY",
-    "start_date": "2025-02-01",
-    "end_date": "2025-12-31",
-    "next_occurrence": "2025-03-01",
-    "description": "Apartment rent payment",
-    "is_active": true,
-    "created_at": "2025-02-08T00:19:44.706015+05:30",
-    "updated_at": "2025-02-08T00:19:44.706015+05:30"
-  }
+    "data": {
+        "id": "0672ff87-e0d0-4db9-9a9d-d38ca0979706",
+        "user": "547f7668-2c75-407a-9847-eee2e0ef109c",
+        "category": "75e648f8-0cb7-4f43-9851-8995e2038d7e",
+        "type": "debit",
+        "amount": "100.00",
+        "frequency": "daily",
+        "start_date": "2025-02-13T00:00:00Z",
+        "end_date": null,
+        "next_run": "2025-02-13T00:00:00Z",
+        "description": ""
+    }
 }
 ```
 
-## Savings Plan Deadline Extension
+## 7. Savings Plan Deadline Extension
 
 ### Extend Savings Plan Deadline
 ```
@@ -768,89 +758,78 @@ PATCH /savings/plans/{id}/extend-deadline/
 }
 ```
 
-## Transaction Summary and Trends
+## 8. Transaction Summary and Trends
 
 ### Get Transaction Summary
 ```
-GET /transactions/summary/
+GET /transaction-analytics/
 ```
 
 **Query Parameters:**
 - `start_date`: date (YYYY-MM-DD)
 - `end_date`: date (YYYY-MM-DD)
-- `category`: UUID (optional)
 
 **Response:** `200 OK`
 ```json
 {
-  "data": {
-    "period": {
-      "start_date": "2025-01-01",
-      "end_date": "2025-02-08"
-    },
-    "total_income": "5000.00",
-    "total_expenses": "3500.00",
-    "net_savings": "1500.00",
-    "category_breakdown": [
-      {
-        "category": "Groceries",
-        "total_amount": "800.00",
-        "percentage": 22.86
-      }
-    ],
-    "monthly_averages": {
-      "income": "2500.00",
-      "expenses": "1750.00",
-      "savings": "750.00"
+    "data": {
+        "total_income": 0,
+        "total_expense": 200.0,
+        "category_expense": [
+            {
+                "category_name": "travel",
+                "total": 200.0
+            }
+        ],
+        "transactions": {
+            "credit_transactions": [],
+            "debit_transactions": [
+                {
+                    "category": "travel",
+                    "amount": "100.00",
+                    "date": "2025-02-13T00:00:00Z"
+                },
+                {
+                    "category": "travel",
+                    "amount": "100.00",
+                    "date": "2025-02-13T00:00:00Z"
+                }
+            ]
+        }
     }
-  }
 }
 ```
 
 ### Get Transaction Trends
 ```
-GET /transactions/trends/
+GET /transaction-analytics/trends/
 ```
 
 **Query Parameters:**
-- `period`: string (WEEKLY, MONTHLY, YEARLY)
 - `start_date`: date (YYYY-MM-DD)
 - `end_date`: date (YYYY-MM-DD)
 
 **Response:** `200 OK`
 ```json
 {
-  "data": {
-    "trend_period": "MONTHLY",
-    "trends": [
-      {
-        "period": "2025-01",
-        "income": "2500.00",
-        "expenses": "1800.00",
-        "savings": "700.00",
-        "top_expense_categories": [
-          {
-            "category": "Groceries",
-            "amount": "500.00"
-          }
-        ],
-        "comparison_previous_period": {
-          "income_change": "+5.2%",
-          "expense_change": "-2.1%",
-          "savings_change": "+15.3%"
-        }
-      }
-    ],
-    "overall_trend": {
-      "income_trend": "INCREASING",
-      "expense_trend": "STABLE",
-      "savings_trend": "INCREASING"
+    "data": {
+        "start_date": "2025-02-01",
+        "end_date": "2025-02-13",
+        "total_income": 0.0,
+        "total_expense": 200.0,
+        "income": [],
+        "expense": [
+            {
+                "category_name": "travel",
+                "amount": 200.0,
+                "percentage": 100.0
+            }
+        ]
     }
-  }
 }
 ```
 
-## Export Functionality
+## 9. Export Functionality
 
 ### Export Transactions to PDF
 ```
@@ -860,15 +839,14 @@ GET /transactions/export/pdf/
 **Query Parameters:**
 - `start_date`: date (YYYY-MM-DD)
 - `end_date`: date (YYYY-MM-DD)
-- `categories`: array of UUIDs (optional)
+- `file_format`: pdf | csv
 
 **Response:** `200 OK`
 ```json
 {
-  "data": {
-    "file_url": "https://api.example.com/downloads/transactions_2025_01_02.pdf",
-    "expires_at": "2025-02-09T00:19:44.706015+05:30"
-  }
+    "data": {
+        "detail": "Transaction history report sent to your email"
+    }
 }
 ```
 
@@ -880,14 +858,16 @@ GET /transactions/export/csv/
 **Query Parameters:**
 - `start_date`: date (YYYY-MM-DD)
 - `end_date`: date (YYYY-MM-DD)
-- `categories`: array of UUIDs (optional)
+- `file_format`: pdf | csv
 
 **Response:** `200 OK`
 ```json
 {
-  "data": {
-    "file_url": "https://api.example.com/downloads/transactions_2025_01_02.csv",
-    "expires_at": "2025-02-09T00:19:44.706015+05:30"
-  }
+    "data": {
+        "detail": "Transaction history report sent to your email"
+    }
 }
 ```
+## Full Source Code  
+
+Please find the full source code [here](https://github.com/shakti505/Finance-tracker-2).
