@@ -1,873 +1,688 @@
-# Finance Management API Documentation ( M2 ) 
+# Finance Management API Documentation ( M3 ) 
 
 ## Overview
-This API enables users to manage their personal finances, including transactions, budgets, categories, and savings plans. Users can track their income and expenses, set budgets, and create savings goals.
 
-## Base URL
-```
-/api/v1
-```
+The Personal Finance Tracker is a comprehensive API that allows users to manage their financial transactions, categorize expenses, and generate reports. It features user authentication, category management, transaction tracking, and reporting functionalities.
 
-## Authentication
-Include JWT token in all requests:
-```
-Authorization: Bearer <token>
-```
+## Core Modules
 
-## 1. Authentication Endpoints
+### 1. Authentication Module
 
-### Register User
-```
-POST /auth/register/
-```
-Create a new user account.
+Handles user registration, login, logout, email verification, and password reset functionality.
 
-**Request:**
+### 2. User Module
+
+Manages user profiles, allowing users to update their information, change passwords, and update email addresses.
+
+### 3. Category Module
+
+Enables the creation and management of transaction categories, supporting both user-specific and predefined categories.
+
+### 4. Transaction Module
+
+Provides functionality to create, read, update, and delete financial transactions, categorizing them as either credits (income) or debits (expenses).
+
+### 5. Summary Report Module
+
+Generates financial reports based on transaction data, including category breakdowns and time period summaries.
+
+## API Endpoints
+
+### Authentication Endpoints
+
+#### Register a new user
+- **URL**: `/api/auth/signup`
+- **Method**: `POST`
+- **Data**:
 ```json
 {
-  "email": "user@example.com",
-  "username": "john_doe",
   "name": "John Doe",
-  "password": "securepassword123@"
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "password": "SecureP@ssw0rd"
+}
+```
+- **Response**: 
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "John Doe",
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "created_at": "2025-03-10T12:00:00Z",
+  "updated_at": "2025-03-10T12:00:00Z",
+  "is_deleted": false,
+  "is_staff": false
 }
 ```
 
-**Response:** `201 Created`
+#### Login
+- **URL**: `/api/auth/login`
+- **Method**: `POST`
+- **Data**:
 ```json
 {
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "email": "user@example.com",
-  "username": "john_doe",
-  "name": "John Doe"
+  "username": "johndoe",
+  "password": "SecureP@ssw0rd"
 }
 ```
-
-### Login
-```
-POST /auth/login/
-```
-Authenticate user and receive token.
-
-**Request:**
+- **Response**:
 ```json
 {
-  "username": "john_doe",
-  "password": "securepassword123@"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-    "data": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4OTU2MDg3LCJpYXQiOjE3Mzg5NTI0ODcsImp0aSI6IjlmZmVjZTg5ZmQwMjRmMDVhMjViMzUyZTZlOTdhZjQxIiwidXNlcl9pZCI6IjI2YTg0ZTVjLTZjNzgtNDk1NC04YmFmLWFlNWZjYzhiNDNmNiJ9.v0LH38ulQu_ftJ38tbhtu6UHS9oA56_C0XA4hYTBZvQ",
-        "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczOTM4NDQ4NywiaWF0IjoxNzM4OTUyNDg3LCJqdGkiOiJmZmY4ODRiZDZiZmM0ZjEzYjhjMmIyMjA2OTFhMTYwYSIsInVzZXJfaWQiOiIyNmE4NGU1Yy02Yzc4LTQ5NTQtOGJhZi1hZTVmY2M4YjQzZjYifQ.Q-6BAjzME_5RTQAXXCsOXVvfJcCUYHSJ8B4AGz_V2GQ"
-    }
-```
-
-### Logout
-```
-POST /auth/logout/
-```
-Invalidate current token.
-
-**Response:** `200 OK`
-```json
-{
-    "message": "Logged out successfully"
-}
-```
-
-## 2. Category Management
-
-### List Categories
-```
-GET /categories/
-```
-Retrieve all categories for the authenticated user.
-
-
-**Response:** `200 OK`
-```json
-{
-  "count": 5,
-  "next": "/api/v1/categories/?page=2",
-  "previous": null,
-  "data": [
-    {
-      "id": "550e8400-e29b-41d4-a716-446655440000",
-      "name": "Groceries",
-      "type": "debit",
-      "is_predefined": false,
-      "created_at": "2025-02-03T13:10:03.508906+05:30",
-      "updated_at": "2025-02-03T13:10:03.509248+05:30"
-    }
-  ]
-}
-```
-
-### Get Category Detail
-```
-GET /categories/{id}/
-```
-Retrieve details of a specific category.
-
-**Response:** `200 OK`
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Groceries",
-  "type": "debit",
-  "is_predefined": false,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-03T13:10:03.509248+05:30"
-}
-```
-
-### Create Category
-```
-POST /categories/
-```
-Create a new transaction category.
-
-**Request:**
-```json
-{
-  "name": "Groceries",
-  "type": "debit"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Groceries",
-  "type": "debit",
-  "is_predefined": false,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-03T13:10:03.509248+05:30"
-}
-```
-
-### Update Category
-```
-PUT /categories/{id}/
-```
-Update an existing category.
-
-**Request:**
-```json
-{
-  "name": "Updated Groceries",
-  "type": "debit"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "name": "Updated Groceries",
-  "type": "debit",
-  "is_predefined": false,
-  "created_at": "2025-02-03T13:10:03.508906+05:30",
-  "updated_at": "2025-02-07T13:10:03.509248+05:30"
-}
-```
-
-### Delete Category
-```
-DELETE /categories/{id}/
-```
-Delete a category. Cannot delete if transactions exist or if category is predefined.
-
-**Response:** `204 No Content`
-
-## 3. Transaction Management
-
-### List Transactions
-```
-GET /transactions/
-```
-Retrieve user's transactions with optional filtering.
-
-
-**Response:** `200 OK`
-```json
-{
-  "count": 10,
-  "next": "/api/v1/transactions/?page=2",
-  "previous": null,
-    "data": [
-        {
-            "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
-            "created_at": "2025-02-07T23:58:43.310845+05:30",
-            "updated_at": "2025-02-07T23:58:43.310859+05:30",
-            "is_deleted": false,
-            "amount": "10.00",
-            "date": "2025-02-04T00:00:00+05:30",
-            "description": "Sample transaction",
-            "type": "debit",
-            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-            "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
-        }
-    ]
-}
-```
-
-### Get Transaction Detail
-```
-GET /transactions/{id}/
-```
-Retrieve details of a specific transaction.
-
-**Response:** `200 OK`
-```json
-{
-        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
-        "created_at": "2025-02-07T23:58:43.310845+05:30",
-        "updated_at": "2025-02-07T23:58:43.310859+05:30",
-        "is_deleted": false,
-        "amount": "10.00",
-        "date": "2025-02-04T00:00:00+05:30",
-        "description": "Sample transaction",
-        "type": "debit",
-        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
-}
-```
-
-### Create Transaction
-```
-POST /transactions/
-```
-Record a new transaction.
-
-**Request:**
-```json
-{
-    "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "date": "2025-02-04",
-    "amount": 10.00,
-    "type": "debit",
-    "category":"38c73786-d676-4d97-8fb9-78f187a50ae3",
-    "description": "Sample transaction"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-    "data": {
-        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
-        "created_at": "2025-02-07T23:58:43.310845+05:30",
-        "updated_at": "2025-02-07T23:58:43.310859+05:30",
-        "is_deleted": false,
-        "amount": "10.00",
-        "date": "2025-02-04T00:00:00+05:30",
-        "description": "Sample transaction",
-        "type": "debit",
-        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
-    }
-}
-```
-
-### Update Transaction
-```
-PUT /transactions/{id}/
-```
-Update an existing transaction.
-
-**Request:**
-```json
-{
-    "amount":"999"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-    "data": {
-        "id": "b62f80c9-695e-4bbe-bdf3-f9dba50ac7ea",
-        "created_at": "2025-02-07T23:58:43.310845+05:30",
-        "updated_at": "2025-02-08T00:03:27.226104+05:30",
-        "is_deleted": false,
-        "amount": "999.00",
-        "date": "2025-02-04T00:00:00+05:30",
-        "description": "Sample transaction",
-        "type": "debit",
-        "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-        "category": "38c73786-d676-4d97-8fb9-78f187a50ae3"
-    }
-}
-```
-
-### Delete Transaction
-```
-DELETE /transactions/{id}/
-```
-Remove a transaction from records.
-
-**Response:** `204 No Content`
-
-
-
-## 4. Budget Management
-
-### List Budgets
-```
-GET /budgets/
-```
-Retrieve user's budgets with spending progress.
-
-**Query Parameters:**
-- `month_year`: integer
-- `category`: UUID
-
-**Response:** `200 OK`
-```json
-{
-  "count": 5,
-  "next": "/api/v1/budgets/?page=2",
-  "previous": null,
-    "data": [
-        {
-            "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
-            "amount": "1000.00",
-            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-            "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-            "spent_amount": "0.00",
-            "year": 2025,
-            "month": 3,
-            "is_deleted": false
-        }
-    ]
-}
-```
-
-### Get Budget Detail
-```
-GET /budgets/{id}/
-```
-Retrieve details of a specific budget.
-
-**Response:** `200 OK`
-```json
-{
-    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
-    "amount": "1000.00",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-    "spent_amount": "0.00",
-    "year": 2025,
-    "month": 3,
-    "is_deleted": false
-}
-```
-
-### Create Budget
-```
-POST /budgets/
-```
-Set a new budget for a category.
-
-**Request:**
-```json
-{       
-        "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
-        "category":"38c73786-d676-4d97-8fb9-78f187a50ae3",
-        "amount": "1000",
-        "month_year":"3-2025"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
-    "amount": "1000.00",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-    "spent_amount": "0.00",
-    "year": 2025,
-    "month": 3,
-    "is_deleted": false
-}
-```
-
-### Update Budget
-```
-PUT /budgets/{id}/
-```
-Modify an existing budget.
-
-**Request:**
-```json
-{
-  "amount": 600.00
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-    "id": "e2c62488-b97c-41d4-bd12-219469c44a0f",
-    "amount": "600.00",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "category": "38c73786-d676-4d97-8fb9-78f187a50ae3",
-    "spent_amount": "0.00",
-    "year": 2025,
-    "month": 3,
-    "is_deleted": false
-}
-```
-
-### Delete Budget
-```
-DELETE /budgets/{id}/
-```
-Remove a budget allocation.
-
-**Response:** `204 No Content`
-
-## 5. Savings Plans
-
-### List Savings Plans
-```
-GET /savings/plans/
-```
-Retrieve all savings plans with progress.
-
-
-**Response:** `200 OK`
-```json
-{
-  "count": 3,
-  "next": null,
-  "previous": null,
-    "data": [
-        {
-            "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-            "name": "MANALI",
-            "target_amount": "10000.00",
-            "deadline": "2026-08-24",
-            "priority": "HIGH",
-            "frequency": "WEEKLY",
-            "is_deleted": false,
-            "progress_percentage": 0.0,
-            "amount_saved": 0,
-            "remaining_amount": 10000.0,
-            "time_remaining": "19 months left"
-        }
-    ]
-}
-```
-
-### Get Savings Plan Detail
-```
-GET /savings/plans/{id}/
-```
-Retrieve details of a specific savings plan.
-
-**Response:** `200 OK`
-```json
-{
-    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "name": "MANALI",
-    "target_amount": "10000.00",
-    "deadline": "2026-08-24",
-    "priority": "HIGH",
-    "frequency": "WEEKLY",
-    "is_deleted": false,
-    "progress_percentage": 0.0,
-    "amount_saved": 0,
-    "remaining_amount": 10000.0,
-    "time_remaining": "19 months left"
-}
-```
-
-### Create Savings Plan
-```
-POST /savings/plans/
-```
-Create a new savings goal.
-
-**Request:**
-```json
-{
-    "user":"3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "name":"MANALI",
-    "target_amount":"10000",
-    "deadline": "2026-08-24",
-    "priority": "HIGH",
-    "frequency": "WEEKLY"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "name": "MANALI",
-    "target_amount": "10000.00",
-    "deadline": "2026-08-24",
-    "priority": "HIGH",
-    "frequency": "WEEKLY",
-    "is_deleted": false,
-    "progress_percentage": 0.0,
-    "amount_saved": 0,
-    "remaining_amount": 10000.0,
-    "time_remaining": "19 months left"
-}
-```
-
-### Update Savings Plan
-```
-PUT /savings/plans/{id}/
-```
-Modify an existing savings plan.
-
-**Request:**
-```json
-{
-    "target_amount":"50000"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "name": "MANALI",
-    "target_amount": "50000.00",
-    "deadline": "2026-08-24",
-    "priority": "HIGH",
-    "frequency": "WEEKLY",
-    "is_deleted": false,
-    "progress_percentage": 0.0,
-    "amount_saved": 0,
-    "remaining_amount": 50000.0,
-    "time_remaining": "19 months left"
-}
-```
-
-### Delete Savings Plan
-```
-DELETE /savings/plans/{id}/
-```
-Remove a savings plan. Cannot delete if transactions exist.
-
-**Response:** `204 No Content`
-
-### List Savings Transactions
-```
-GET /savings/transactions/
-```
-Retrieve all savings contributions.
-
-
-**Response:** `200 OK`
-```json
-{
-    "data": [
-        {
-            "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
-            "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-            "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-            "amount_contributed": "500.00",
-            "transaction_date": "2025-02-08T00:19:44.706015+05:30",
-            "is_deleted": false
-        }
-    ]
-}
-```
-
-### Record Savings Transaction
-```
-POST /savings/transactions/
-```
-Record a contribution to a savings plan.
-
-**Request:**
-```json
-{
-  "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-  "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-  "amount_contributed": "500"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-    "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
-    "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "amount_contributed": "500.00",
-    "transaction_date": "2025-02-08T00:19:44.706015+05:30",
-    "is_deleted": false
-}
-```
-
-### Update Savings Transaction
-```
-PUT /savings/transactions/{id}/
-```
-Update a savings contribution record.
-
-**Request:**
-```json
-{
-  "amount_contributed": 2000.00,
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-    "id": "2eb25565-b0f6-40a7-ac84-362fe3eeea5e",
-    "savings_plan": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "user": "3d24fe11-cb09-450d-a601-b16592afcfc2",
-    "amount_contributed": "2000.00",
-    "transaction_date": "2025-02-08T00:19:44.706015+05:30",
-    "is_deleted": false
-}
-```
-
-### Delete Savings Transaction
-```
-DELETE /savings/transactions/{id}/
-```
-Remove a savings contribution record.
-
-**Response:** `204 No Content`
-
-## 6. Recurring Transactions
-
-### List Recurring Transactions
-```
-GET /recurring-transactions/
-```
-Retrieve all recurring transactions.
-
-**Response:** `200 OK`
-```json
-{
-    "data": {
-        "count": 7,
-        "next": "http://127.0.0.1:8000/api/v1/recurring-transactions/?page=2",
-        "previous": null,
-        "results": [
-            {
-                "id": "26d21dc4-060b-4953-8af8-3fdde9f9c198",
-                "user": "547f7668-2c75-407a-9847-eee2e0ef109c",
-                "category": "75e648f8-0cb7-4f43-9851-8995e2038d7e",
-                "type": "debit",
-                "amount": "100.00",
-                "frequency": "monthly",
-                "start_date": "2025-02-12T00:00:00+05:30",
-                "end_date": "2025-02-13T00:00:00+05:30",
-                "next_run": "2025-03-12T00:00:00+05:30",
-                "description": ""
-            },
-    }
-  ]
-}
-```
-
-### Create Recurring Transaction
-```
-POST /recurring-transactions/
-```
-
-**Request:**
-```json
-{
-    "user":"547f7668-2c75-407a-9847-eee2e0ef109c",
-    "amount":"100",
-    "category":"75e648f8-0cb7-4f43-9851-8995e2038d7e",
-    "frequency":"daily",
-    "start_date":"2025-02-13",
-    "end_date":"2025-02-13",
-    "type":"debit"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-    "data": {
-        "id": "0672ff87-e0d0-4db9-9a9d-d38ca0979706",
-        "user": "547f7668-2c75-407a-9847-eee2e0ef109c",
-        "category": "75e648f8-0cb7-4f43-9851-8995e2038d7e",
-        "type": "debit",
-        "amount": "100.00",
-        "frequency": "daily",
-        "start_date": "2025-02-13T00:00:00Z",
-        "end_date": null,
-        "next_run": "2025-02-13T00:00:00Z",
-        "description": ""
-    }
-}
-```
-
-## 7. Savings Plan Deadline Extension
-
-### Extend Savings Plan Deadline
-```
-PATCH /savings/plans/{id}/extend-deadline/
-```
-
-**Request:**
-```json
-{
-  "new_deadline": "2026-12-31",
-  "reason": "Need more time to reach savings goal"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "data": {
-    "id": "be9e68c6-702e-4bc0-8e0a-cddd2dd34a63",
-    "name": "MANALI",
-    "target_amount": "50000.00",
-    "original_deadline": "2026-08-24",
-    "new_deadline": "2026-12-31",
-    "extension_history": [
-      {
-        "date_extended": "2025-02-08T00:19:44.706015+05:30",
-        "old_deadline": "2026-08-24",
-        "new_deadline": "2026-12-31",
-        "reason": "Need more time to reach savings goal"
-      }
-    ],
-    "progress_percentage": 4.0,
-    "amount_saved": 2000.0,
-    "remaining_amount": 48000.0,
-    "time_remaining": "23 months left"
+  "message": "Welcome back! You have been successfully logged in.",
+  "tokens": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "abc"
   }
 }
 ```
 
-## 8. Transaction Summary and Trends
-
-### Get Transaction Summary
-```
-GET /transaction-analytics/
-```
-
-**Query Parameters:**
-- `start_date`: date (YYYY-MM-DD)
-- `end_date`: date (YYYY-MM-DD)
-
-**Response:** `200 OK`
+#### Logout
+- **URL**: `/api/auth/logout`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
 ```json
 {
-    "data": {
-        "total_income": 0,
-        "total_expense": 200.0,
-        "category_expense": [
-            {
-                "category_name": "travel",
-                "total": 200.0
-            }
-        ],
-        "transactions": {
-            "credit_transactions": [],
-            "debit_transactions": [
-                {
-                    "category": "travel",
-                    "amount": "100.00",
-                    "date": "2025-02-13T00:00:00Z"
-                },
-                {
-                    "category": "travel",
-                    "amount": "100.00",
-                    "date": "2025-02-13T00:00:00Z"
-                }
-            ]
-        }
-    }
+  "message": "You have been successfully logged out. Thank you for using our service."
 }
 ```
 
-### Get Transaction Trends
-```
-GET /transaction-analytics/trends/
-```
-
-**Query Parameters:**
-- `start_date`: date (YYYY-MM-DD)
-- `end_date`: date (YYYY-MM-DD)
-
-**Response:** `200 OK`
+#### Verify Email
+- **URL**: `/api/auth/verify-user/{token}`
+- **Method**: `GET`
+- **Response**:
 ```json
 {
-    "data": {
-        "start_date": "2025-02-01",
-        "end_date": "2025-02-13",
-        "total_income": 0.0,
-        "total_expense": 200.0,
-        "income": [],
-        "expense": [
-            {
-                "category_name": "travel",
-                "amount": 200.0,
-                "percentage": 100.0
-            }
-        ]
-    }
+  "message": "Thank you! Your email has been successfully verified. You can now access all features of your account."
 }
 ```
 
-## 9. Export Functionality
-
-### Export Transactions to PDF
-```
-GET /transactions/export/pdf/
-```
-
-**Query Parameters:**
-- `start_date`: date (YYYY-MM-DD)
-- `end_date`: date (YYYY-MM-DD)
-- `file_format`: pdf | csv
-
-**Response:** `200 OK`
+#### Request Password Reset
+- **URL**: `/api/auth/reset-password`
+- **Method**: `POST`
+- **Data**:
 ```json
 {
-    "data": {
-        "detail": "Transaction history report sent to your email"
-    }
+  "email": "john.doe@example.com"
+}
+```
+- **Response**:
+```json
+{
+  "message": "Password reset instructions have been sent to your email address. Please check your inbox and follow the provided link."
 }
 ```
 
-### Export Transactions to CSV
-```
-GET /transactions/export/csv/
-```
-
-**Query Parameters:**
-- `start_date`: date (YYYY-MM-DD)
-- `end_date`: date (YYYY-MM-DD)
-- `file_format`: pdf | csv
-
-**Response:** `200 OK`
+#### Reset Password
+- **URL**: `/api/auth/reset-password-confirm/{token}`
+- **Method**: `POST`
+- **Data**:
 ```json
 {
-    "data": {
-        "detail": "Transaction history report sent to your email"
-    }
+  "password": "NewSecureP@ssw0rd",
+  "confirm_password": "NewSecureP@ssw0rd"
 }
 ```
-## Full Source Code  
+- **Response**:
+```json
+{
+  "message": "Your password has been successfully updated. You can now log in with your new password."
+}
+```
 
-Please find the full source code [here](https://github.com/shakti505/Finance-tracker-2).
+#### Resend Verification Link
+- **URL**: `/api/auth/resend-verification-link`
+- **Method**: `POST`
+- **Data**:
+```json
+{
+  "email": "john.doe@example.com"
+}
+```
+- **Response**:
+```json
+{
+  "message": "A new verification link has been sent to your email address. Please check your inbox and verify your account."
+}
+```
+
+### User Management Endpoints
+
+#### Get User Details
+- **URL**: `/api/users/{user_id}`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "John Doe",
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "created_at": "2025-03-10T12:00:00Z",
+  "updated_at": "2025-03-10T12:00:00Z",
+  "is_deleted": false,
+  "is_staff": false
+}
+```
+
+#### Update User Details
+- **URL**: `/api/users/{user_id}`
+- **Method**: `PATCH`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "name": "John Smith",
+  "username": "johnsmith"
+}
+```
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "name": "John Smith",
+  "username": "johnsmith",
+  "email": "john.doe@example.com",
+  "created_at": "2025-03-10T12:00:00Z",
+  "updated_at": "2025-03-10T13:00:00Z",
+  "is_deleted": false,
+  "is_staff": false
+}
+```
+
+#### Update Password
+- **URL**: `/api/users/{user_id}/update-password`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "current_password": "SecureP@ssw0rd",
+  "new_password": "EvenMoreSecureP@ssw0rd",
+  "confirm_password": "EvenMoreSecureP@ssw0rd"
+}
+```
+- **Response**:
+```json
+{
+  "message": "Password has been updated successfully"
+}
+```
+
+#### Request Email Update
+- **URL**: `/api/users/{user_id}/update-email`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "new_email": "john.smith@example.com"
+}
+```
+- **Response**:
+```json
+{
+  "message": "We've sent one-time passwords to both your current and new email addresses. Please check both inboxes to verify your email change."
+}
+```
+
+#### Confirm Email Update
+- **URL**: `/api/users/{user_id}/update-email/confirm`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "current_email_otp": "123456",
+  "new_email_otp": "789012"
+}
+```
+- **Response**:
+```json
+{
+  "message": "Great news! Your email address has been updated successfully. You can now use your new email to log in."
+}
+```
+
+#### Delete User Account
+- **URL**: `/api/users/{user_id}`
+- **Method**: `DELETE`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "password": "SecureP@ssw0rd"
+}
+```
+- **Response**:
+```
+Empty response with 204 status code
+```
+
+### Category Endpoints
+
+#### List Categories
+- **URL**: `/api/categories`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "count": 3,
+  "items": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174001",
+      "name": "Groceries",
+      "user_id": "123e4567-e89b-12d3-a456-426614174000",
+      "is_predefined": false,
+      "created_at": "2025-03-10T12:00:00Z",
+      "updated_at": "2025-03-10T12:00:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174002",
+      "name": "Utilities",
+      "user_id": "123e4567-e89b-12d3-a456-426614174000",
+      "is_predefined": false,
+      "created_at": "2025-03-10T12:01:00Z",
+      "updated_at": "2025-03-10T12:01:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174003",
+      "name": "Salary",
+      "user_id": "123e4567-e89b-12d3-a456-426614174000",
+      "is_predefined": true,
+      "created_at": "2025-03-10T12:02:00Z",
+      "updated_at": "2025-03-10T12:02:00Z",
+      "is_deleted": false
+    }
+  ]
+}
+```
+
+#### Create Category
+- **URL**: `/api/categories`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "name": "Entertainment",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000"
+}
+```
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174004",
+  "name": "Entertainment",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "is_predefined": false,
+  "created_at": "2025-03-10T14:00:00Z",
+  "updated_at": "2025-03-10T14:00:00Z",
+  "is_deleted": false
+}
+```
+
+#### Get Category Details
+- **URL**: `/api/categories/{category_id}`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174004",
+  "name": "Entertainment",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "is_predefined": false,
+  "created_at": "2025-03-10T14:00:00Z",
+  "updated_at": "2025-03-10T14:00:00Z",
+  "is_deleted": false
+}
+```
+
+#### Update Category
+- **URL**: `/api/categories/{category_id}`
+- **Method**: `PATCH`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "name": "Movies & Entertainment"
+}
+```
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174004",
+  "name": "Movies & Entertainment",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "is_predefined": false,
+  "created_at": "2025-03-10T14:00:00Z",
+  "updated_at": "2025-03-10T14:30:00Z",
+  "is_deleted": false
+}
+```
+
+#### Delete Category
+- **URL**: `/api/categories/{category_id}`
+- **Method**: `DELETE`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```
+Empty response with 204 status code
+```
+
+### Transaction Endpoints
+
+#### List Transactions
+- **URL**: `/api/transactions`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "count": 2,
+  "items": [
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174005",
+      "type": "DEBIT",
+      "amount": "50.00",
+      "category_id": "123e4567-e89b-12d3-a456-426614174001",
+      "user_id": "123e4567-e89b-12d3-a456-426614174000",
+      "date": "2025-03-09T15:30:00",
+      "description": "Weekly grocery shopping",
+      "created_at": "2025-03-09T16:00:00Z",
+      "updated_at": "2025-03-09T16:00:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "123e4567-e89b-12d3-a456-426614174006",
+      "type": "CREDIT",
+      "amount": "2000.00",
+      "category_id": "123e4567-e89b-12d3-a456-426614174003",
+      "user_id": "123e4567-e89b-12d3-a456-426614174000",
+      "date": "2025-03-01T09:00:00",
+      "description": "Monthly salary",
+      "created_at": "2025-03-01T09:30:00Z",
+      "updated_at": "2025-03-01T09:30:00Z",
+      "is_deleted": false
+    }
+  ]
+}
+```
+
+#### Create Transaction
+- **URL**: `/api/transactions`
+- **Method**: `POST`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "type": "DEBIT",
+  "amount": "120.50",
+  "category_id": "123e4567-e89b-12d3-a456-426614174004",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "date": "2025-03-10T19:30:00",
+  "description": "Movie night with friends"
+}
+```
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174007",
+  "type": "DEBIT",
+  "amount": "120.50",
+  "category_id": "123e4567-e89b-12d3-a456-426614174004",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "date": "2025-03-10T19:30:00",
+  "description": "Movie night with friends",
+  "created_at": "2025-03-10T19:45:00Z",
+  "updated_at": "2025-03-10T19:45:00Z",
+  "is_deleted": false
+}
+```
+
+#### Get Transaction Details
+- **URL**: `/api/transactions/{transaction_id}`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174007",
+  "type": "DEBIT",
+  "amount": "120.50",
+  "category_id": "123e4567-e89b-12d3-a456-426614174004",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "date": "2025-03-10T19:30:00",
+  "description": "Movie night with friends",
+  "created_at": "2025-03-10T19:45:00Z",
+  "updated_at": "2025-03-10T19:45:00Z",
+  "is_deleted": false
+}
+```
+
+#### Update Transaction
+- **URL**: `/api/transactions/{transaction_id}`
+- **Method**: `PATCH`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Data**:
+```json
+{
+  "amount": "135.75",
+  "description": "Movie night with friends including dinner"
+}
+```
+- **Response**:
+```json
+{
+  "id": "123e4567-e89b-12d3-a456-426614174007",
+  "type": "DEBIT",
+  "amount": "135.75",
+  "category_id": "123e4567-e89b-12d3-a456-426614174004",
+  "user_id": "123e4567-e89b-12d3-a456-426614174000",
+  "date": "2025-03-10T19:30:00",
+  "description": "Movie night with friends including dinner",
+  "created_at": "2025-03-10T19:45:00Z",
+  "updated_at": "2025-03-10T20:15:00Z",
+  "is_deleted": false
+}
+```
+
+#### Delete Transaction
+- **URL**: `/api/transactions/{transaction_id}`
+- **Method**: `DELETE`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```
+Empty response with 204 status code
+```
+
+### Summary Report Endpoints
+
+#### Get Overall Summary Report
+- **URL**: `/api/transaction-reports?start_date=2025-03-01&end_date=2025-03-31`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "period": {
+    "start_date": "2025-03-01",
+    "end_date": "2025-03-31"
+  },
+  "total_transactions": 3,
+  "total_income": 2000.0,
+  "total_expense": 306.25,
+  "net_balance": 1693.75,
+  "by_type": {
+    "CREDIT": 2000.0,
+    "DEBIT": 306.25
+  },
+  "categories": [
+    {
+      "name": "Groceries",
+      "period": {
+        "start_date": "2025-03-01",
+        "end_date": "2025-03-31"
+      },
+      "total_transactions": 1,
+      "total_income": 0.0,
+      "total_expense": 50.0,
+      "net_balance": -50.0,
+      "by_type": {
+        "CREDIT": 0.0,
+        "DEBIT": 50.0
+      }
+    },
+    {
+      "name": "Movies & Entertainment",
+      "period": {
+        "start_date": "2025-03-01",
+        "end_date": "2025-03-31"
+      },
+      "total_transactions": 1,
+      "total_income": 0.0,
+      "total_expense": 135.75,
+      "net_balance": -135.75,
+      "by_type": {
+        "CREDIT": 0.0,
+        "DEBIT": 135.75
+      }
+    },
+    {
+      "name": "Salary",
+      "period": {
+        "start_date": "2025-03-01",
+        "end_date": "2025-03-31"
+      },
+      "total_transactions": 1,
+      "total_income": 2000.0,
+      "total_expense": 0.0,
+      "net_balance": 2000.0,
+      "by_type": {
+        "CREDIT": 2000.0,
+        "DEBIT": 0.0
+      }
+    }
+  ]
+}
+```
+
+#### Get Category-specific Summary Report
+- **URL**: `/api/transaction-reports?start_date=2025-03-01&end_date=2025-03-31&category_id=123e4567-e89b-12d3-a456-426614174004`
+- **Method**: `GET`
+- **Headers**: `Authorization: Bearer {access_token}`
+- **Response**:
+```json
+{
+  "period": {
+    "start_date": "2025-03-01",
+    "end_date": "2025-03-31"
+  },
+  "total_transactions": 1,
+  "total_income": 0.0,
+  "total_expense": 135.75,
+  "net_balance": -135.75,
+  "by_type": {
+    "CREDIT": 0.0,
+    "DEBIT": 135.75
+  },
+  "category": {
+    "id": "123e4567-e89b-12d3-a456-426614174004",
+    "name": "Movies & Entertainment",
+    "is_predefined": false
+  }
+}
+```
+
+## Module Descriptions
+
+### Authentication Module
+
+The Authentication Module handles user registration, authentication, and access control. It provides:
+- Secure user registration with email verification
+- Login functionality with JWT token issuance
+- Password reset capabilities via email
+- Session management and logout functionality
+
+### User Module
+
+The User Module manages user profiles and account settings:
+- User profile management (name, username)
+- Password updates with security validation
+- Email address changes with dual-verification
+- Account deletion with proper cleanup
+
+### Category Module
+
+The Category Module enables transaction categorization:
+- Creation of custom categories for organizing transactions
+- Support for both user-specific and system-wide predefined categories
+- Category management operations (create, read, update, delete)
+- Validation to prevent duplicate category names
+
+### Transaction Module
+
+The Transaction Module is the core financial tracking component:
+- Records financial transactions (both income and expenses)
+- Associates transactions with categories and users
+- Supports full CRUD operations on transaction records
+- Implements validation for transaction data integrity
+
+### Summary Report Module
+
+The Summary Report Module provides financial insights:
+- Generates financial summaries over specified time periods
+- Calculates income, expenses, and net balance
+- Provides category-specific breakdowns of financial activity
+- Supports filtering by categories and date ranges
+
+## Authentication
+
+All API endpoints (except registration, login, and password reset) require authentication using JWT tokens. Include the access token in the Authorization header as follows:
+
+```
+Authorization: Bearer {access_token}
+```
+
+## Error Handling
+
+The API returns appropriate HTTP status codes and error messages:
+
+- `200 OK`: Request succeeded
+- `201 Created`: Resource successfully created
+- `204 No Content`: Request succeeded with no response body
+- `400 Bad Request`: Invalid request data
+- `401 Unauthorized`: Authentication required or failed
+- `403 Forbidden`: Permission denied
+- `404 Not Found`: Resource not found
+- `500 Internal Server Error`: Server-side error
+
+Error responses include detailed messages to help troubleshoot issues:
+
+```json
+{
+  "error": {
+    "field_name": "Error message specific to the field"
+  }
+}
+```
+
+## Security Features
+
+The application implements several security measures:
+- Password hashing using Flask-Bcrypt
+- JWT-based authentication
+- Rate limiting for sensitive operations
+- Email verification for new accounts
+- Two-factor verification for email changes
+- Session invalidation on password changes
+
+## Summary
+
+The Personal Finance Tracker API provides a comprehensive platform for financial management with secure user authentication, transaction tracking, and financial reporting. The modular design allows for easy maintenance and future expansion of features.
