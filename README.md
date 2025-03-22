@@ -79,7 +79,7 @@ As a user of the Flask Finance Tracker, I want to:
    - Register with email verification.
    - Log in securely using credentials.
    - Update my profile and password.
-   - Create and manage child accounts (for parent users).
+   - Create the child and view the child details (for parent users).
 
 3. **Budget Effectively**:
    - Set monthly budgets per category.
@@ -943,6 +943,7 @@ To streamline the setup process, an initialization script has been added to crea
 1. Ensure the database is configured and migrations are applied:
    ```bash
    python scripts/create_admin_user.py
+   python scripts/create_predefined_categories.py
    ```
 
 ### Notes
