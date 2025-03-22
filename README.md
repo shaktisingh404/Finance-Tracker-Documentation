@@ -1,5 +1,3 @@
-# Flask Finance Tracker Documentation
-
 ## Table of Contents
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
