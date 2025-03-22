@@ -22,7 +22,7 @@
 
 ## Overview
 
-The **Flask Finance Tracker** is a robust personal finance management application built with Flask, SQLAlchemy, and JWT-based authentication. It integrates Celery for asynchronous task processing, enabling users to efficiently track transactions, manage budgets, set savings goals, and generate detailed financial reports. Designed for security and scalability, this tool caters to individual users, parents managing child accounts, and administrators overseeing the system.
+The **Flask Finance Tracker** is a robust personal finance management application built with Flask, SQLAlchemy, and JWT-based authentication. It integrates Celery for asynchronous task processing, enabling users to efficiently track transactions, manage budgets, set savings goals, and generate detailed financial reports. Designed for security and scalability, this tool caters to individual users, parents creatingh child accounts, and administrators overseeing the system.
 
 **Version**: 1.0  
 **Release Date**: March 2025
