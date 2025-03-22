@@ -1,4 +1,3 @@
-
 # Flask Finance Tracker Documentation
 
 ## Table of Contents
