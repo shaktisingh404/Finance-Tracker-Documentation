@@ -39,7 +39,7 @@ To run the Flask Finance Tracker, ensure the following requirements are met:
 - **Flask**: Version 2.3 or higher
 - **Database**: PostgreSQL 15+ (configurable for other SQLAlchemy-supported databases)
 - **Dependencies**: Listed in `requirements.txt`
-- **Celery**: Requires a message broker (e.g., Redis or RabbitMQ)
+- **Celery**: Requires a message broker (e.g., Redis)
 
 ### Setup Instructions
 1. **Clone the Repository**:
